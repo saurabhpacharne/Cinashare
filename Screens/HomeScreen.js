@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import MovieCard from './MovieCard'
 import {db} from "../FirebaseConfig"
 import { collection,query,onSnapshot,orderBy } from 'firebase/firestore'
-import { useRoute } from '@react-navigation/native'
+
 
 
 const HomeScreen = () => {

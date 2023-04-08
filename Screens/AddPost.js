@@ -128,7 +128,7 @@ const AddPost = () => {
           <TextInput
             ref={inputDRef}
             style={styles.input1}
-            label="Description"
+            label="Your Opinion"
             mode="outlined"
             outlineColor="#16007A"
             activeOutlineColor="#16007A"
@@ -273,7 +273,7 @@ const AddPost = () => {
               }}
               onPress={() => {onSubmit()}}
             >
-              <Text style={{ color: "white" }}>Post</Text>
+              <Text style={{ color: "white" }}>POST</Text>
             </Button>
             )
           }

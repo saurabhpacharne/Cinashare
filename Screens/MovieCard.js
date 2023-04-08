@@ -5,15 +5,14 @@ import { Rating } from "react-native-ratings";
 import {userAuth} from "../Context"
 import { useNavigation } from "@react-navigation/native";
 import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../FirebaseConfig";
+import { db, storage } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { deleteObject, ref } from "firebase/storage";
 
 
 
 const MovieCard = ({...item}) => {
   const {getImgUrl,user}= useContext(userAuth)
-
-  
 const [url, setUrl] = useState(null)
 useEffect(()=>{
     getImgUrl(`${item.ref1}`).then((url)=>setUrl(url))
@@ -27,7 +26,7 @@ const addComment = ()=>{
     postUserId: item.userId
   })
 }
-const showAlert = (id)=>{
+const showAlert =async (id)=>{
   Alert.alert(
     "Delete Post",
     "If you delete this post, this post will delete for everyone ",
@@ -37,22 +36,17 @@ const showAlert = (id)=>{
       },
       {
         text: 'Yes, delete',
-        onPress: async() => {
-          await deleteDoc(doc(db,"MoviePost",id)).then(()=>( Toast.show({
+        onPress:  async() => {
+          await deleteDoc(doc(db,"MoviePost",id)).then(async()=>{( Toast.show({
             type: "success",
             text1: "Post Alert",
             text2: "Your post has been deleted successfully.",
             autoHide: true,
             visibilityTime: 2500,
-          }))).catch((error)=>(
-            Toast.show({
-              type: "error",
-              text1: "Post Alert",
-              text2: error.message,
-              autoHide: true,
-              visibilityTime: 2500,
-            })
-          ))
+          }))
+          const storageImg = ref(storage,item.ref1)
+           await deleteObject(storageImg)
+        })
         }
       }
     ]
@@ -63,7 +57,7 @@ const showAlert = (id)=>{
   return (
     <View>
         {
-          (item.userId==user.uid)?(
+          ( item.userId==user.uid)?(
             <Card style={{ padding: 3, margin: 5, backgroundColor: "white" }}>
             <Card.Title
               title={item.displayName}

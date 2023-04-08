@@ -4,90 +4,53 @@ import { TextInput, Button } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import {userAuth} from "../Context"
+import { useRoute } from "@react-navigation/native";
 
 
 const Register = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {moviePost} = useContext(userAuth)
-const user = moviePost.map((val)=>val.displayName)
-const userExist = (user.find((val)=>val==userName))
 
-const spaceExist =userName.indexOf(" ")
+  const route = useRoute()
+ 
 
   const signUpUser = async () => {
-    setLoading(true)
-    if(userName){
-    if(spaceExist=== -1){
-      if(userExist==undefined){
-        await createUserWithEmailAndPassword(auth, email, password)
-    .then(() => { Toast.show({
-      type:"success",
-      text1:"You have successfully registered",
-      autoHide:true,
-      visibilityTime:2500
-    });
-    setLoading(false)
-      navigation.navigate("Login")})
-      .catch((error) =>
-        Toast.show({
-          type: "error",
-          text1: "Sign Up Alert",
-          text2: error.message,
-          autoHide:true,
-          visibilityTime:2500
-
-        })
-      );
-    updateProfile(auth.currentUser, { displayName: userName });
-
-      }else{
-        Toast.show({
-          type: "error",
-          text1: "username already exist, please try different",
-          autoHide:true,
-          visibilityTime:2500
-        })
-        setLoading(false)
-      }
-    }
-    else{
+    try{
+      setLoading(true)
+      await createUserWithEmailAndPassword(auth, email, password)
+      Toast.show({
+        type:"success",
+        text1:"You have successfully registered",
+        autoHide:true,
+        visibilityTime:2500
+      });
+      setLoading(false)
+      updateProfile(auth.currentUser, { displayName: route.params.displyname });
+       navigation.navigate("Login")
+      
+    } catch (error){
       Toast.show({
         type: "error",
-        text1: "Please dont give space in username",
+        text1: "Sign Up Alert",
+        text2: error.message,
         autoHide:true,
         visibilityTime:2500
       })
-      setLoading(false)
-    }
-  }else{
-    Toast.show({
-      type: "error",
-      text1: "username is required",
-      autoHide:true,
-      visibilityTime:2500
-    })
     setLoading(false)
-  }   
-  };
+    }
+   }
+  
 
   
   return (
     <>
+    <View>
+      <Text>Step:2/2</Text>
+    </View>
       <View style={styles.container}>
-        <Text style={styles.heading}>Signup Here</Text>
-        <TextInput
-          style={styles.input}
-          label="Username"
-          mode="outlined"
-          outlineColor="#16007A"
-          activeOutlineColor="#16007A"
-          onChangeText={(text) => setUserName(text)}
-        />
+        <Text style={styles.heading}>Register Here</Text>
         <TextInput
           style={styles.input}
           label="Email"
@@ -115,7 +78,8 @@ const spaceExist =userName.indexOf(" ")
           }
         />
     {
-      loading?(<ActivityIndicator size="large" color="#16007A" style={{ alignItems:"center", marginTop:100}}/>):(
+      (email && password )?
+      (loading?(<ActivityIndicator size="large" color="#16007A" style={{ alignItems:"center", marginTop:100}}/>):(
         <Button
         style={{
           backgroundColor: "#16007A",
@@ -125,7 +89,19 @@ const spaceExist =userName.indexOf(" ")
         }}
         onPress={() => signUpUser()}
       >
-        <Text style={{ color: "white" }}>Sign Up</Text>
+        <Text style={{ color: "white" }}>REGISTER</Text>
+      </Button>
+      )):(
+        <Button
+        style={{
+          backgroundColor: "grey",
+          width: 150,
+          marginTop: 20,
+          alignSelf: "center",
+        }}
+       
+      >
+        <Text style={{ color: "white" }}>REGISTER</Text>
       </Button>
       )
     }

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Profile from "./Profile";
 import HomeScreen from "./HomeScreen";
@@ -7,6 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import UserAuthProvider from "../Context";
+
+
 
 const Home = () => {
   const Tab = createBottomTabNavigator();

@@ -11,8 +11,10 @@ export const userAuth = createContext();
 const UserAuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [moviePost, setMoviePost] = useState(null)
+  const [userName, setUserName] = useState(null)
   
   const collectionRef = collection(db,"MoviePost")
+  const collectionUser = collection(db,"UserName")
 
   const getAllMoviePost = ()=>{
     const q = query(collectionRef,orderBy("date","desc"));
@@ -24,8 +26,19 @@ const UserAuthProvider = ({ children }) => {
       setMoviePost(allPost)
     })
   }
+  const getAllUserName = ()=>{
+    const q = query(collectionUser,orderBy("date","desc"));
+      onSnapshot(q,(snapShot)=>{
+      const allPost = snapShot.docs.map((doc)=>({
+        id : doc.id,
+        ...doc.data()
+      }));
+      setUserName(allPost)
+    })
+  }
   useEffect(() => {
     getAllMoviePost()
+    getAllUserName()
     
     const unsubcribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -34,7 +47,6 @@ const UserAuthProvider = ({ children }) => {
       unsubcribe();
     };
   }, []);
-
   const addMoviePost = async (
     title,
     description,
@@ -80,7 +92,7 @@ const getProfImgUrl = async(path)=>{
  
   return (
     <>
-    <userAuth.Provider value={{ user ,addMoviePost,Timestamp,getImgUrl,moviePost,getProfImgUrl}}>
+    <userAuth.Provider value={{ user ,addMoviePost,Timestamp,getImgUrl,moviePost,getProfImgUrl,userName}}>
         {children}
         </userAuth.Provider>
         <Toast/>

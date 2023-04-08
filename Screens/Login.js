@@ -1,38 +1,49 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { auth } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
+import { signInWithEmailAndPassword} from "firebase/auth";
 
 const Login = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
 
   const signInUser = async () => {
-    setLoading(true)
+    setLoading(true);
     await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {navigation.navigate("Home"); setLoading(false)})
-      .catch((error) =>{
+      .then(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+        setLoading(false);
+      })
+      .catch((error) => {
         Toast.show({
           type: "error",
           text1: "Sign In Alert",
           text2: error.message,
           autoHide: true,
           visibilityTime: 2500,
-        })
-        setLoading(false)
-      }
-      );
+        });
+        setLoading(false);
+      });
   };
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.heading}>Sign In Here</Text>
+        <Text style={styles.heading}>Login Here</Text>
         <TextInput
           style={styles.input}
           label="Email"
@@ -59,32 +70,37 @@ const Login = ({ navigation }) => {
             />
           }
         />
-    {
-      loading? (
-        <ActivityIndicator size="large" color="#16007A" style={{ alignItems:"center", marginTop:100}}/>
-      ):(<Button
-        style={{
-          backgroundColor: "#16007A",
-          width: 150,
-          marginTop: 20,
-          alignSelf: "center",
-        }}
-        onPress={() =>signInUser()}
-      >
-        <Text style={{ color: "white" }}>Sign In</Text>
-      </Button>)
-    }
-        
-        <View>
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color="#16007A"
+            style={{ alignItems: "center", marginTop: 100 }}
+          />
+        ) : (
+          <Button
+            style={{
+              backgroundColor: "#16007A",
+              width: 150,
+              marginTop: 20,
+              alignSelf: "center",
+            }}
+            onPress={() => signInUser()}
+          >
+            <Text style={{ color: "white" }}>LOGIN</Text>
+          </Button>
+        )}
+
+        <View style={{ alignItems: "center" }}>
           <Text
             style={{ marginTop: 30, fontWeight: "500", alignSelf: "center" }}
           >
             Hava an account ?{" "}
-            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={{ fontSize: 15, fontWeight: "bold", color: "blue" }}>
-                Sign Up{" "}
-              </Text>
-            </TouchableOpacity>
+            <Text
+              style={{ fontSize: 17, fontWeight: "bold", color: "blue" }}
+              onPress={() => navigation.navigate("Set username")}
+            >
+              Register{" "}
+            </Text>
             Here
           </Text>
         </View>
