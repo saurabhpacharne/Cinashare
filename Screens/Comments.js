@@ -75,7 +75,7 @@ const Comments = () => {
             fontWeight: "200",
           }}
         >
-          Be the person to comment{" "}
+          Be the first person to comment{" "}
         </Text>
       )}
      </View>
@@ -92,7 +92,7 @@ const Comments = () => {
           }}
           multiline={true}
           right={
-            (comment)?
+            (comment.trim())?
             <TextInput.Icon
               icon="send-circle"
               size={35}

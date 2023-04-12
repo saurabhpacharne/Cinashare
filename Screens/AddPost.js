@@ -36,6 +36,7 @@ const AddPost = () => {
     { label: "Romance", value: "Romance" },
     { label: "Mystery", value: "Mystery" },
     { label: "Horror", value: "Horror" },
+    { label: "Superhero", value: "Superhero" },
     { label: "Comedy", value: "Comedy" },
     { label: "Fantasy", value: "Fantasy" },
     { label: "Suspense", value: "Suspense" },
@@ -195,7 +196,7 @@ const AddPost = () => {
                 value=""
               />
               <Picker.Item label="Movie" value="Movie" />
-              <Picker.Item label="series" value="series" />
+              <Picker.Item label="Series" value="Series" />
               <Picker.Item label="Documentry" value="Documentry" />
               <Picker.Item label="Anime" value="Anime" />
             </Picker>

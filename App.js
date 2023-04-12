@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { auth } from "./FirebaseConfig";
 import Comments from "./Screens/Comments";
 import UserName from "./Screens/UserName";
+import About from "./Screens/About";
 
 export default function App() {
   const [user, setUser] = useState();
@@ -47,6 +48,7 @@ export default function App() {
                   <Stack.Screen name="Login" component={Login} />
                   <Stack.Screen name="Comments" component={Comments} />
                   <Stack.Screen name="Set username" component={UserName} />
+                  <Stack.Screen name="About Us" component={About} />
                   <Stack.Screen
                     name="Home"
                     component={Home}
@@ -66,6 +68,7 @@ export default function App() {
                 >
                   <Stack.Screen name="Register" component={Register} />
                   <Stack.Screen name="Login" component={Login} />
+                  <Stack.Screen name="About Us" component={About} />
                   <Stack.Screen name="Comments" component={Comments} />
                   <Stack.Screen name="Set username" component={UserName} />
                   <Stack.Screen

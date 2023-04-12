@@ -10,13 +10,15 @@ const UserName = ({ navigation }) => {
   const [user, setUser] = useState("");
   const { userName, Timestamp } = useContext(userAuth);
   const userCollectionRef = collection(db, "UserName");
-  const str = user.trim().indexOf(" ") !== -1;
+  const str = /\s/.test(user)
+
+
 
   const usrnme = userName.map((val) => val.username);
   const userExist = usrnme.find((val) => val == user);
   const addUserName = async () => {
-    if (userExist == undefined) {
-      if (str == false) {
+    if (str==false) {
+      if (userExist == undefined) {
         await addDoc(userCollectionRef, {
           date: Timestamp.now().toDate(),
           username: user,
@@ -28,7 +30,7 @@ const UserName = ({ navigation }) => {
       } else {
         Toast.show({
           type: "error",
-          text1: "Username should be in single word",
+          text1: "username already exist, please try different.",
           autoHide: true,
           visibilityTime: 2500,
         });
@@ -36,12 +38,13 @@ const UserName = ({ navigation }) => {
     } else {
       Toast.show({
         type: "error",
-        text1: "username already exist, please try different",
+        text1: "Dont give space before, after and between username.",
         autoHide: true,
         visibilityTime: 2500,
       });
     }
   };
+  
   return (
     <>
       <View>
@@ -61,7 +64,7 @@ const UserName = ({ navigation }) => {
           onChangeText={(text) => setUser(text)}
         />
       </View>
-      {user ? (
+      {user.trim() ? (
         <Button
           style={{
             backgroundColor: "#16007A",

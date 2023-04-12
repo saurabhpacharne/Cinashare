@@ -14,8 +14,10 @@ import { deleteObject, ref } from "firebase/storage";
 const MovieCard = ({...item}) => {
   const {getImgUrl,user}= useContext(userAuth)
 const [url, setUrl] = useState(null)
+
 useEffect(()=>{
-    getImgUrl(`${item.ref1}`).then((url)=>setUrl(url))
+    getImgUrl(`${item.ref1}`).then((url)=>setUrl(url));
+    
 },[])
 
 let navigation = useNavigation()
@@ -53,7 +55,6 @@ const showAlert =async (id)=>{
   )
   
 }
-
   return (
     <View>
         {
@@ -83,7 +84,7 @@ const showAlert =async (id)=>{
             >
               <Text variant="titleLarge"style={{fontWeight:"900"}}>{item.title} </Text>
               <Text variant="bodyMedium" >{item.genre} </Text>
-              <Paragraph numberOfLines={3} style={{ marginTop: 10 , fontWeight:"400"}}>
+              <Paragraph numberOfLines={4} style={{ marginTop: 10 , fontWeight:"400"}}>
                {item.description}
               </Paragraph>
               <Text variant="bodyMedium" style={{ marginTop: 10 , fontWeight:"700"}}>
@@ -116,7 +117,7 @@ const showAlert =async (id)=>{
                   style={{backgroundColor:'#16007A'}}
                 />
               )}
-              style={{ margin: 0 }}
+             
             />
             <Card.Cover
             
@@ -129,7 +130,7 @@ const showAlert =async (id)=>{
             >
               <Text variant="titleLarge"style={{fontWeight:"900"}}>{item.title} </Text>
               <Text variant="bodyMedium" >{item.genre} </Text>
-              <Paragraph numberOfLines={3} style={{ marginTop: 10 , fontWeight:"400"}}>
+              <Paragraph numberOfLines={4} style={{ marginTop: 10 , fontWeight:"400"}}>
                {item.description}
               </Paragraph>
               <Text variant="bodyMedium" style={{ marginTop: 10 , fontWeight:"700"}}>
