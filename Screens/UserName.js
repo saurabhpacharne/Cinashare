@@ -2,30 +2,22 @@ import { View, Text } from "react-native";
 import React, { useContext, useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { userAuth } from "../Context";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import NetworkError from "./NetworkError";
+
 
 const UserName = ({ navigation }) => {
   const [user, setUser] = useState("");
-  const { userName, Timestamp } = useContext(userAuth);
-  const userCollectionRef = collection(db, "UserName");
-  const str = /\s/.test(user)
-
-
+  const { userName,isConnected} = useContext(userAuth);
+  const str = /\s/.test(user);
 
   const usrnme = userName.map((val) => val.username);
   const userExist = usrnme.find((val) => val == user);
   const addUserName = async () => {
-    if (str==false) {
+    if (str == false) {
       if (userExist == undefined) {
-        await addDoc(userCollectionRef, {
-          date: Timestamp.now().toDate(),
-          username: user,
-        }).then(() => {
-          navigation.navigate("Register", {
-            displyname: user,
-          });
+        navigation.navigate("Register", {
+          displyname: user,
         });
       } else {
         Toast.show({
@@ -44,10 +36,13 @@ const UserName = ({ navigation }) => {
       });
     }
   };
-  
+
   return (
     <>
-      <View>
+    {
+      isConnected?(
+        <>
+          <View>
         <Text>Step:1/2</Text>
       </View>
       <View style={{ marginTop: "40%" }}>
@@ -89,6 +84,12 @@ const UserName = ({ navigation }) => {
         </Button>
       )}
       <Toast />
+        </>
+      ):(
+        <NetworkError/>
+      )
+    }
+    
     </>
   );
 };

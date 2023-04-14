@@ -1,6 +1,6 @@
 import { Alert, View } from "react-native";
 import React, { useState ,useContext, useEffect} from "react";
-import { Avatar, Button, Card, Paragraph, Text ,IconButton} from "react-native-paper";
+import { Avatar, Card, Paragraph, Text ,IconButton} from "react-native-paper";
 import { Rating } from "react-native-ratings";
 import {userAuth} from "../Context"
 import { useNavigation } from "@react-navigation/native";
@@ -102,7 +102,7 @@ const showAlert =async (id)=>{
                 style={{ margin: 15 }}
                 
               />
-              <View><Text onPress={()=>addComment()} style={{color:"#16007A"}}>comments</Text></View>
+              <View><Text onPress={()=>addComment()} style={{color:"#16007A", fontWeight:"bold", fontSize:15}}>comments</Text></View>
             </Card.Content>
           </Card>
           ):(
@@ -148,7 +148,7 @@ const showAlert =async (id)=>{
                 style={{ margin: 15 }}
                 
               />
-              <View><Text onPress={()=>addComment()} style={{color:"#16007A"}}>comments</Text></View>
+              <View><Text onPress={()=>addComment()} style={{color:"#16007A",fontWeight:"bold", fontSize:15}}>comments</Text></View>
             </Card.Content>
           </Card>
           )

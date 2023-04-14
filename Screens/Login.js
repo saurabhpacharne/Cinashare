@@ -1,30 +1,28 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React, { useContext, useState } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { auth } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { signInWithEmailAndPassword} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userAuth } from "../Context";
+import NetworkError from "./NetworkError";
 
 const Login = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-
+  const { isConnected } = useContext(userAuth);
   const signInUser = async () => {
     setLoading(true);
     await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then(async () => {
         navigation.reset({
           index: 0,
           routes: [{ name: "Home" }],
         });
+        await AsyncStorage.setItem("userMail", email);
         setLoading(false);
       })
       .catch((error) => {
@@ -41,70 +39,80 @@ const Login = ({ navigation }) => {
 
   return (
     <>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Login Here</Text>
-        <TextInput
-          style={styles.input}
-          label="Email"
-          mode="outlined"
-          outlineColor="#16007A"
-          activeOutlineColor="#16007A"
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          label="Password"
-          mode="outlined"
-          outlineColor="#16007A"
-          activeOutlineColor="#16007A"
-          secureTextEntry={secureTextEntry}
-          onChangeText={(text) => setPassword(text)}
-          right={
-            <TextInput.Icon
-              icon="eye"
-              onPress={() => {
-                setSecureTextEntry(!secureTextEntry);
-                return false;
-              }}
+      {isConnected ? (
+        <>
+          <View style={styles.container}>
+            <Text style={styles.heading}>Login Here</Text>
+            <TextInput
+              style={styles.input}
+              label="Email"
+              mode="outlined"
+              outlineColor="#16007A"
+              activeOutlineColor="#16007A"
+              onChangeText={(text) => setEmail(text)}
             />
-          }
-        />
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color="#16007A"
-            style={{ alignItems: "center", marginTop: 100 }}
-          />
-        ) : (
-          <Button
-            style={{
-              backgroundColor: "#16007A",
-              width: 150,
-              marginTop: 20,
-              alignSelf: "center",
-            }}
-            onPress={() => signInUser()}
-          >
-            <Text style={{ color: "white" }}>LOGIN</Text>
-          </Button>
-        )}
+            <TextInput
+              style={styles.input}
+              label="Password"
+              mode="outlined"
+              outlineColor="#16007A"
+              activeOutlineColor="#16007A"
+              secureTextEntry={secureTextEntry}
+              onChangeText={(text) => setPassword(text)}
+              right={
+                <TextInput.Icon
+                  icon="eye"
+                  onPress={() => {
+                    setSecureTextEntry(!secureTextEntry);
+                    return false;
+                  }}
+                />
+              }
+            />
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#16007A"
+                style={{ alignItems: "center", marginTop: 100 }}
+              />
+            ) : (
+              <Button
+                style={{
+                  backgroundColor: "#16007A",
+                  width: 150,
+                  marginTop: 20,
+                  alignSelf: "center",
+                }}
+                onPress={() => signInUser()}
+              >
+                <Text style={{ color: "white" }}>LOGIN</Text>
+              </Button>
+            )}
 
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={{ marginTop: 30, fontWeight: "500", alignSelf: "center" }}
-          >
-            Hava an account ?{" "}
-            <Text
-              style={{ fontSize: 17, fontWeight: "bold", color: "blue" }}
-              onPress={() => navigation.navigate("Set username")}
-            >
-              Register{" "}
-            </Text>
-            Here
-          </Text>
-        </View>
-      </View>
-      <Toast />
+            <View style={{ alignItems: "center" }}>
+              <Text
+                style={{
+                  marginTop: 30,
+                  fontWeight: "500",
+                  alignSelf: "center",
+                }}
+              >
+                Hava an account ?{" "}
+                <Text
+                  style={{ fontSize: 17, fontWeight: "bold", color: "blue" }}
+                  onPress={() => navigation.navigate("Set username")}
+                >
+                  Register{" "}
+                </Text>
+                Here
+              </Text>
+            </View>
+          </View>
+          <Toast />
+        </>
+      ) : (
+        <NetworkError />
+      )}
     </>
   );
 };

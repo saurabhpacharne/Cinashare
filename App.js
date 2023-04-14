@@ -6,23 +6,29 @@ import Register from "./Screens/Register";
 import Login from "./Screens/Login";
 import { Provider } from "react-native-paper";
 import UserAuthProvider from "./Context";
-import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "./FirebaseConfig";
 import Comments from "./Screens/Comments";
 import UserName from "./Screens/UserName";
 import About from "./Screens/About";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetworkError from "./Screens/NetworkError";
 export default function App() {
   const [user, setUser] = useState();
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("userMail");
+      if (value !== null) {
+        setUser(value);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    const unsubcribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => {
-      unsubcribe();
-    };
-  }, []);
+    getData();
+  }, [user]);
 
   const Stack = createNativeStackNavigator();
 

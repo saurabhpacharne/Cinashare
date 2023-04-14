@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 import { Card, Avatar } from "react-native-paper";
 import { userAuth } from "../Context";
 import { doc, deleteDoc } from "firebase/firestore";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { db } from "../FirebaseConfig";
+
 
 const CommentSection = ({ name, postIdValue, ...item }) => {
   const { user } = useContext(userAuth);
@@ -47,7 +47,6 @@ const CommentSection = ({ name, postIdValue, ...item }) => {
           </Text>
         </Card.Content>
       </Card>
-      <Toast />
     </>
   );
 };

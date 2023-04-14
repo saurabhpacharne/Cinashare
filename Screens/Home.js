@@ -39,7 +39,7 @@ const Home = () => {
               tabBaractiveTintColor: "#16007A",
               headerLeft: () => (
                 <Image
-                  source={require("../assets/icon.png")}
+                  source={require("../assets/iconNav.png")}
                   style={{ width: 140, height: 50 }}
                 />
               ),

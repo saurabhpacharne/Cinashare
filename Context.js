@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, storage } from "./FirebaseConfig";
+import NetInfo from '@react-native-community/netinfo';
 import {
   addDoc,
   collection,
@@ -8,8 +9,6 @@ import {
   query,
   orderBy,
   onSnapshot,
-  getDocs,
-  where,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
@@ -20,7 +19,8 @@ const UserAuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [moviePost, setMoviePost] = useState(null);
   const [userName, setUserName] = useState(null);
-  const [id, setId] = useState(null);
+  const [isConnected, setIsConnected] = useState(true);
+ 
 
   const collectionRef = collection(db, "MoviePost");
   const collectionUser = collection(db, "UserName");
@@ -95,9 +95,16 @@ const UserAuthProvider = ({ children }) => {
   const getImgUrl = async (path) => {
     return await getDownloadURL(ref(storage, path));
   };
-  const getProfImgUrl = async (path) => {
-    return await getDownloadURL(ref(storage, path));
-  };
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <>
@@ -108,8 +115,8 @@ const UserAuthProvider = ({ children }) => {
           Timestamp,
           getImgUrl,
           moviePost,
-          getProfImgUrl,
           userName,
+          isConnected
         }}
       >
         {children}

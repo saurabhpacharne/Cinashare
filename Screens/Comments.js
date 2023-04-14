@@ -1,8 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { TextInput } from "react-native-paper";
@@ -16,11 +12,12 @@ import {
 } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import CommentSection from "./CommentSection";
+import NetworkError from "./NetworkError";
 
 const Comments = () => {
   let route = useRoute();
   const inputRef = useRef();
-  const { user, Timestamp,moviePost } = useContext(userAuth);
+  const { user, Timestamp, isConnected } = useContext(userAuth);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(null);
   const commentCollectionRef = collection(
@@ -34,7 +31,7 @@ const Comments = () => {
       date: Timestamp.now().toDate(),
       userId: user.uid,
     });
-    setComment("")
+    setComment("");
     inputRef.current.clear();
   };
   const getAllCommentsPost = async () => {
@@ -50,61 +47,70 @@ const Comments = () => {
   useEffect(() => {
     getAllCommentsPost();
   }, []);
-  
+
   return (
     <>
-     <View style={{flex:10}}>
-     {comments && comments.length !== 0 ? (
-        <FlatList
-          data={comments}
-          keyExtractor={(Item) => Item.id}
-          renderItem={({ item }) => {
-            return (
-              <>
-                <CommentSection {...item}  name={route.params.postUserId} postIdValue={route.params.postId}/>
-              </>
-            );
-          }}
-        />
-      ) : (
-        <Text
-          style={{
-            alignSelf: "center",
-            marginTop: 200,
-            fontSize: 20,
-            fontWeight: "200",
-          }}
-        >
-          Be the first person to comment{" "}
-        </Text>
-      )}
-     </View>
-      <View style={{ flex: 1, justifyContent: "flex-end" }}>
-        <TextInput
-          ref={inputRef}
-          onChangeText={(text)=>setComment(text)}
-          placeholder="start typing..."
-          underlineColor="#16007A"
-          style={{
-            backgroundColor: "#FAFAF7",
-            position: "absolute",
-            width: "100%",
-          }}
-          multiline={true}
-          right={
-            (comment.trim())?
-            <TextInput.Icon
-              icon="send-circle"
-              size={35}
-              onPress={() => addUserComment()}
-            />:
-            <TextInput.Icon
-              icon="send-circle-outline"
-              size={35}
+      {isConnected ? (
+        <>
+          <View style={{ flex: 10 }}>
+            {comments && comments.length !== 0 ? (
+              <FlatList
+                data={comments}
+                keyExtractor={(Item) => Item.id}
+                renderItem={({ item }) => {
+                  return (
+                    <>
+                      <CommentSection
+                        {...item}
+                        name={route.params.postUserId}
+                        postIdValue={route.params.postId}
+                      />
+                    </>
+                  );
+                }}
+              />
+            ) : (
+              <Text
+                style={{
+                  alignSelf: "center",
+                  marginTop: 200,
+                  fontSize: 20,
+                  fontWeight: "200",
+                }}
+              >
+                Be the first person to comment{" "}
+              </Text>
+            )}
+          </View>
+          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <TextInput
+              ref={inputRef}
+              onChangeText={(text) => setComment(text)}
+              placeholder="start typing..."
+              underlineColor="#16007A"
+              style={{
+                backgroundColor: "#FAFAF7",
+                position: "absolute",
+                width: "100%",
+              }}
+              multiline={true}
+              right={
+                comment.trim() ? (
+                  <TextInput.Icon
+                    icon="send-circle"
+                    size={35}
+                    onPress={() => addUserComment()}
+                  />
+                ) : (
+                  <TextInput.Icon icon="send-circle-outline" size={35} />
+                )
+              }
             />
-          }
-        />
-      </View>
+          </View>
+        </>
+      ) : (
+        <NetworkError />
+      )}
     </>
   );
 };
