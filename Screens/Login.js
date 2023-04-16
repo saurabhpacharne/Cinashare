@@ -4,7 +4,6 @@ import { TextInput, Button } from "react-native-paper";
 import { auth } from "../FirebaseConfig";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userAuth } from "../Context";
 import NetworkError from "./NetworkError";
 
@@ -22,7 +21,6 @@ const Login = ({ navigation }) => {
           index: 0,
           routes: [{ name: "Home" }],
         });
-        await AsyncStorage.setItem("userMail", email);
         setLoading(false);
       })
       .catch((error) => {

@@ -8,7 +8,7 @@ const About = () => {
     <>
       <View style={{ margin: 10 }}>
         <Text style={{ fontSize: 25, fontWeight: "600" }}>
-          Dear {user.displayName},{" "}
+          Dear {user.displayName}
         </Text>
         <Text style={{ marginTop: 15, fontSize: 15, fontWeight: "400" }}>
           This app is developed by{" "}
@@ -21,7 +21,7 @@ const About = () => {
         </Text>
       </View>
       <View style={{ alignItems: "flex-end", marginRight: 30, marginTop: 15 }}>
-        <Text style={{fontSize: 15, fontWeight: "600"}}>Thank You</Text>
+        <Text style={{ fontSize: 15, fontWeight: "600" }}>Thank You</Text>
       </View>
     </>
   );

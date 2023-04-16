@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, storage } from "./FirebaseConfig";
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo from "@react-native-community/netinfo";
 import {
   addDoc,
   collection,
@@ -20,7 +20,6 @@ const UserAuthProvider = ({ children }) => {
   const [moviePost, setMoviePost] = useState(null);
   const [userName, setUserName] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
- 
 
   const collectionRef = collection(db, "MoviePost");
   const collectionUser = collection(db, "UserName");
@@ -49,7 +48,6 @@ const UserAuthProvider = ({ children }) => {
   useEffect(() => {
     getAllMoviePost();
     getAllUserName();
-
     const unsubcribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -57,6 +55,8 @@ const UserAuthProvider = ({ children }) => {
       unsubcribe();
     };
   }, []);
+
+ 
   const addMoviePost = async (
     title,
     description,
@@ -97,7 +97,7 @@ const UserAuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
     });
 
@@ -105,6 +105,7 @@ const UserAuthProvider = ({ children }) => {
       unsubscribe();
     };
   }, []);
+
 
   return (
     <>
@@ -116,7 +117,7 @@ const UserAuthProvider = ({ children }) => {
           getImgUrl,
           moviePost,
           userName,
-          isConnected
+          isConnected,
         }}
       >
         {children}

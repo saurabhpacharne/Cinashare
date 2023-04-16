@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Avatar, Button } from "react-native-paper";
 import { userAuth } from "../Context";
 import { signOut } from "firebase/auth";
@@ -9,9 +9,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetworkError from "./NetworkError";
 
 const Profile = () => {
-  const { user, isConnected } = useContext(userAuth);
+  const { user, isConnected} = useContext(userAuth);
   const navigation = useNavigation();
 
+ 
   return (
     <>
       {isConnected ? (
@@ -40,8 +41,7 @@ const Profile = () => {
             <Button
               style={{ backgroundColor: "#16007A", width: 150 }}
               onPress={async () => {
-                await AsyncStorage.removeItem("userMail").then(() => {
-                  signOut(auth);
+                await AsyncStorage.clear().then(() => {
                   navigation.replace("Login");
                 });
               }}

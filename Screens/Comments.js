@@ -44,6 +44,7 @@ const Comments = () => {
       setComments(allPost);
     });
   };
+
   useEffect(() => {
     getAllCommentsPost();
   }, []);

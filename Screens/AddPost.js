@@ -19,6 +19,7 @@ import { userAuth } from "../Context";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NetworkError from "./NetworkError";
 
+
 const AddPost = () => {
   const navigation = useNavigation();
   const [selectedIndValue, setSelectedIndValue] = useState();
@@ -33,7 +34,7 @@ const AddPost = () => {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
   const inputDRef = useRef();
-
+ 
   const gentre = [
     { label: "Action", value: "Action" },
     { label: "Drama", value: "Drama" },
@@ -118,6 +119,7 @@ const AddPost = () => {
       });
     }
   };
+
 
   return (
     <>

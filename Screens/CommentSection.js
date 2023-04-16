@@ -1,10 +1,9 @@
-import { View, Text, Alert } from "react-native";
-import React, { useContext } from "react";
+import { Text, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, Avatar } from "react-native-paper";
-import { userAuth } from "../Context";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
-
+import { userAuth } from "../Context";
 
 const CommentSection = ({ name, postIdValue, ...item }) => {
   const { user } = useContext(userAuth);
@@ -25,6 +24,7 @@ const CommentSection = ({ name, postIdValue, ...item }) => {
       ]);
     }
   };
+ 
 
   return (
     <>
