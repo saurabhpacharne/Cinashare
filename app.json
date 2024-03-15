@@ -41,8 +41,15 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "6c73be67-dcb2-448b-acb7-ce4fa0dcf185"
+        "projectId": "568054e8-864a-4217-aab9-a019c03d039b"
       }
+    },
+    "owner": "pravinthokal7",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/568054e8-864a-4217-aab9-a019c03d039b"
     }
   }
 }

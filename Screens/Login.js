@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View, KeyboardAvoidingView, Platform } from "react-native";
 import React, { useContext, useState } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { auth } from "../FirebaseConfig";
@@ -36,7 +36,10 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{ flex: 1 }}
+    >
       {isConnected ? (
         <>
           <View style={styles.container}>
@@ -111,7 +114,7 @@ const Login = ({ navigation }) => {
       ) : (
         <NetworkError />
       )}
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
