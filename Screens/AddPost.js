@@ -66,10 +66,8 @@ const AddPost = () => {
         `http://www.omdbapi.com/?apikey=${OMDb_API_KEY || ''}&t=${title}`
       );
       console.log('response is ' + response);
-      const plot = response.data.Plot;
-      console.log('plot is' + plot);
       // Update the plot state or use it as needed
-      return plot;
+      return response.data;
     } catch (error) {
       // Handle errors gracefully
       console.error('Error fetching plot:', error);
@@ -148,7 +146,10 @@ const AddPost = () => {
     if (movieTitle) {
       try {
         setLoading(true); // Set loading state to true before fetch
-        const plot = await fetchPlot(movieTitle);
+        const response = await fetchPlot(movieTitle);
+        const plot = response.Plot;
+        const imageURI = response.Poster;
+        console.log('imageURI is ', imageURI);
         if (plot) {
           setdescription(plot);
           console.log('description is set to ' + plot);
@@ -160,6 +161,15 @@ const AddPost = () => {
             autoHide: true,
             visibilityTime: 2500,
           });
+        }
+        if (imageURI) {
+          setSelectedImage(imageURI);
+
+          const img = await fetch(imageURI);
+          const bytes = await img.blob();
+          setImage(bytes);
+
+          console.log('imageURI is set to ' + imageURI);
         }
       } catch (error) {
         console.error('Error fetching plot:', error);
@@ -183,14 +193,14 @@ const AddPost = () => {
       });
     }
   };
-  
+
 
   useEffect(() => {
     if (loading) {
       // Optional code to be executed while loading
     }
   }, [loading]);
-  
+
 
 
 
