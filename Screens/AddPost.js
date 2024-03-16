@@ -151,6 +151,7 @@ const AddPost = () => {
         const imageURI = response.Poster;
         const genre = response.Genre;
         const type = response.Type;
+        const industry = response.Country;
         console.log('imageURI is ', imageURI);
         if (plot) {
           setdescription(plot);
@@ -178,6 +179,9 @@ const AddPost = () => {
         }
         if(type) {
           setSelectedTypeValue(type);
+        }
+        if(industry) {
+          setSelectedIndValue(industry);
         }
       } catch (error) {
         console.error('Error fetching plot:', error);
@@ -301,7 +305,7 @@ const AddPost = () => {
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder="Select Industry"
+                  placeholder={selectedIndValue}
                   searchPlaceholder="Search..."
                   value={selectedIndValue}
                   onChange={item => {
@@ -325,7 +329,7 @@ const AddPost = () => {
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder="Select Type"
+                  placeholder={selectedTypeValue}
                   searchPlaceholder="Search..."
                   value={selectedTypeValue}
                   onChange={item => {
