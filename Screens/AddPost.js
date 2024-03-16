@@ -149,6 +149,8 @@ const AddPost = () => {
         const response = await fetchPlot(movieTitle);
         const plot = response.Plot;
         const imageURI = response.Poster;
+        const genre = response.Genre;
+        const type = response.Type;
         console.log('imageURI is ', imageURI);
         if (plot) {
           setdescription(plot);
@@ -170,6 +172,12 @@ const AddPost = () => {
           setImage(bytes);
 
           console.log('imageURI is set to ' + imageURI);
+        }
+        if (genre) {
+          setSelectedGen(genre);
+        }
+        if(type) {
+          setSelectedTypeValue(type);
         }
       } catch (error) {
         console.error('Error fetching plot:', error);
