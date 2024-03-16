@@ -18,6 +18,7 @@ import { Feather } from "@expo/vector-icons";
 import { userAuth } from "../Context";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NetworkError from "./NetworkError";
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 const AddPost = () => {
@@ -120,6 +121,21 @@ const AddPost = () => {
     }
   };
 
+  const indType =  [
+    { label: 'Bollywood', value: 'Bollywood' },
+    { label: 'Hollywood', value: 'Hollywood' },
+    { label: 'Marathi', value: 'Marathi' },
+    { label: 'South Indian', value: 'South Indian' },
+    { label: 'Korean', value: 'Korean' },
+    { label: 'Japanese', value: 'Japanese' },
+  ];
+
+  const cineType = [
+    { label: 'Movie', value: 'Movie' },
+    { label: 'Series', value: 'Series' },
+    { label: 'Documentry', value: 'Documentry' },
+    { label: 'Anime', value: 'Anime' }
+  ];
 
   return (
     <>
@@ -175,6 +191,7 @@ const AddPost = () => {
                 selectedStyle={styles.selectedStyle}
               />
               <View style={{ padding: 12 }}>
+              {/* <Text>Select Ind Type</Text>
                 <Picker
                   selectedValue={selectedIndValue}
                   style={{ height: 50, backgroundColor: "#FAFAF7" }}
@@ -194,8 +211,33 @@ const AddPost = () => {
                   <Picker.Item label="Korean" value="Korean" />
                   <Picker.Item label="Japanese" value="Japanese" />
                 </Picker>
+
+ */}
+ <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={indType}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder="Select Industry"
+        searchPlaceholder="Search..."
+        value={selectedIndValue}
+        onChange={item => {
+          setSelectedIndValue(item.value);
+        }}
+        renderLeftIcon={() => (
+          <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+        )}
+      />
+
               </View>
               <View style={{ padding: 12 }}>
+                {/* <Text>Select Type</Text>
                 <Picker
                   selectedValue={selectedTypeValue}
                   style={{ height: 50, backgroundColor: "#FAFAF7" }}
@@ -212,7 +254,30 @@ const AddPost = () => {
                   <Picker.Item label="Series" value="Series" />
                   <Picker.Item label="Documentry" value="Documentry" />
                   <Picker.Item label="Anime" value="Anime" />
-                </Picker>
+                </Picker> */}
+
+<Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={cineType}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder="Select Type"
+        searchPlaceholder="Search..."
+        value={selectedTypeValue}
+        onChange={item => {
+          setSelectedTypeValue(item.value);
+        }}
+        renderLeftIcon={() => (
+          <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+        )}
+      />  
+
               </View>
               <View>
                 {selectedTypeValue && (
@@ -354,6 +419,29 @@ const styles = StyleSheet.create({
   selectedStyle: {
     borderRadius: 12,
     marginLeft: 10,
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });
 export default AddPost;
