@@ -5,6 +5,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { TextInput, Button } from "react-native-paper";
@@ -19,7 +20,10 @@ import { userAuth } from "../Context";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NetworkError from "./NetworkError";
 import { Dropdown } from 'react-native-element-dropdown';
+import axios from 'axios';
 
+
+const OMDb_API_KEY = 'a5903907'; // Replace with your key if required
 
 const AddPost = () => {
   const navigation = useNavigation();
@@ -35,8 +39,8 @@ const AddPost = () => {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
   const inputDRef = useRef();
- 
-  const gentre = [
+
+  const genre = [
     { label: "Action", value: "Action" },
     { label: "Drama", value: "Drama" },
     { label: "Crime", value: "Crime" },
@@ -55,6 +59,24 @@ const AddPost = () => {
     { label: "Crime-thriller", value: "Crime-thriller" },
     { label: "Psychological thriller", value: "Psychological thriller" },
   ];
+
+  const fetchPlot = async (title) => {
+    try {
+      const response = await axios.get(
+        `http://www.omdbapi.com/?apikey=${OMDb_API_KEY || ''}&t=${title}`
+      );
+      console.log('response is ' + response);
+      const plot = response.data.Plot;
+      console.log('plot is' + plot);
+      // Update the plot state or use it as needed
+      return plot;
+    } catch (error) {
+      // Handle errors gracefully
+      console.error('Error fetching plot:', error);
+      return ''; // Or handle with a default value
+    }
+  };
+
   const rating = (rate) => {
     setStar(rate);
   };
@@ -121,7 +143,58 @@ const AddPost = () => {
     }
   };
 
-  const indType =  [
+  const fetchPlotAndUpdateDescription = async () => {
+    const movieTitle = title.trim();
+    if (movieTitle) {
+      try {
+        setLoading(true); // Set loading state to true before fetch
+        const plot = await fetchPlot(movieTitle);
+        if (plot) {
+          setdescription(plot);
+          console.log('description is set to ' + plot);
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Plot Not Found",
+            text2: "No plot found for this title",
+            autoHide: true,
+            visibilityTime: 2500,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching plot:', error);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to fetch plot",
+          autoHide: true,
+          visibilityTime: 2500,
+        });
+      } finally {
+        setLoading(false); // Set loading state to false after fetch (success or error)
+      }
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Enter Title",
+        text2: "Please enter a title to search for the plot",
+        autoHide: true,
+        visibilityTime: 2500,
+      });
+    }
+  };
+  
+
+  useEffect(() => {
+    if (loading) {
+      // Optional code to be executed while loading
+    }
+  }, [loading]);
+  
+
+
+
+  const indType = [
     { label: 'Bollywood', value: 'Bollywood' },
     { label: 'Hollywood', value: 'Hollywood' },
     { label: 'Marathi', value: 'Marathi' },
@@ -153,25 +226,33 @@ const AddPost = () => {
                 mode="outlined"
                 outlineColor="#16007A"
                 activeOutlineColor="#16007A"
+                disabled={loading} // Disable input while loading
                 onChangeText={(text) => setTitle(text)}
               />
-              <TextInput
-                ref={inputDRef}
-                style={styles.input1}
-                label="Your Opinion"
-                mode="outlined"
-                outlineColor="#16007A"
-                activeOutlineColor="#16007A"
-                multiline={true}
-                onChangeText={(text) => setdescription(text)}
-              />
+              <TouchableOpacity style={styles.searchButton} onPress={fetchPlotAndUpdateDescription}>
+                <Text style={styles.searchButtonText}>Search Movie</Text>
+              </TouchableOpacity>
+              {loading ? (
+                <Text>Fetching plot...</Text>
+              ) : (
+                <TextInput
+                  ref={inputDRef}
+                  style={styles.input1}
+                  label="Your Opinion"
+                  mode="outlined"
+                  outlineColor="#16007A"
+                  activeOutlineColor="#16007A"
+                  multiline={true}
+                  value={description} // Ensure description state is used as value
+                  onChangeText={(text) => setdescription(text)}
+                />)}
 
               <MultiSelect
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 iconStyle={styles.iconStyle}
-                data={gentre}
+                data={genre}
                 labelField="label"
                 valueField="value"
                 placeholder="Select Genre"
@@ -191,92 +272,51 @@ const AddPost = () => {
                 selectedStyle={styles.selectedStyle}
               />
               <View style={{ padding: 12 }}>
-              {/* <Text>Select Ind Type</Text>
-                <Picker
-                  selectedValue={selectedIndValue}
-                  style={{ height: 50, backgroundColor: "#FAFAF7" }}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSelectedIndValue(itemValue)
-                  }
-                >
-                  <Picker.Item
-                    style={{ fontWeight: "bold" }}
-                    label="Select Industry"
-                    value=""
-                  />
-                  <Picker.Item label="Hollywood" value="Hollywood" />
-                  <Picker.Item label="Bollywood" value="Bollywood" />
-                  <Picker.Item label="Marathi" value="Marathi" />
-                  <Picker.Item label="South Indian" value="South Indian" />
-                  <Picker.Item label="Korean" value="Korean" />
-                  <Picker.Item label="Japanese" value="Japanese" />
-                </Picker>
-
- */}
- <Dropdown
-        style={styles.dropdown}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={indType}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder="Select Industry"
-        searchPlaceholder="Search..."
-        value={selectedIndValue}
-        onChange={item => {
-          setSelectedIndValue(item.value);
-        }}
-        renderLeftIcon={() => (
-          <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-        )}
-      />
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={indType}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select Industry"
+                  searchPlaceholder="Search..."
+                  value={selectedIndValue}
+                  onChange={item => {
+                    setSelectedIndValue(item.value);
+                  }}
+                  renderLeftIcon={() => (
+                    <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+                  )}
+                />
 
               </View>
               <View style={{ padding: 12 }}>
-                {/* <Text>Select Type</Text>
-                <Picker
-                  selectedValue={selectedTypeValue}
-                  style={{ height: 50, backgroundColor: "#FAFAF7" }}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSelectedTypeValue(itemValue)
-                  }
-                >
-                  <Picker.Item
-                    style={{ fontWeight: "bold" }}
-                    label="Select Type"
-                    value=""
-                  />
-                  <Picker.Item label="Movie" value="Movie" />
-                  <Picker.Item label="Series" value="Series" />
-                  <Picker.Item label="Documentry" value="Documentry" />
-                  <Picker.Item label="Anime" value="Anime" />
-                </Picker> */}
-
-<Dropdown
-        style={styles.dropdown}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={cineType}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder="Select Type"
-        searchPlaceholder="Search..."
-        value={selectedTypeValue}
-        onChange={item => {
-          setSelectedTypeValue(item.value);
-        }}
-        renderLeftIcon={() => (
-          <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-        )}
-      />  
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={cineType}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select Type"
+                  searchPlaceholder="Search..."
+                  value={selectedTypeValue}
+                  onChange={item => {
+                    setSelectedTypeValue(item.value);
+                  }}
+                  renderLeftIcon={() => (
+                    <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+                  )}
+                />
 
               </View>
               <View>
@@ -443,5 +483,15 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
   },
+  searchButton: {
+    marginLeft: 10, // Adjust as needed
+    padding: 10,
+    backgroundColor: '#16007A',
+    borderRadius: 10,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  }
 });
 export default AddPost;
