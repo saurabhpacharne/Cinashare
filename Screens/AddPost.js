@@ -506,7 +506,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   searchButton: {
-    marginLeft: 10, // Adjust as needed
+    marginTop: 10, // Adjust as needed
+    marginHorizontal: 10,
     padding: 10,
     backgroundColor: '#16007A',
     borderRadius: 10,
@@ -514,6 +515,7 @@ const styles = StyleSheet.create({
   searchButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center'
   }
 });
 export default AddPost;
