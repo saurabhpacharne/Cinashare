@@ -41,15 +41,15 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "568054e8-864a-4217-aab9-a019c03d039b"
+        "projectId": "${PROJECT_ID}"
       }
     },
-    "owner": "pravinthokal7",
+    "owner": "${OWNER}",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/568054e8-864a-4217-aab9-a019c03d039b"
+      "url": "${UPDATES_URL}"
     }
   }
 }

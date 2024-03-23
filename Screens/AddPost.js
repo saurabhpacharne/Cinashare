@@ -10,7 +10,7 @@ import {
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { Rating } from "react-native-ratings";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { MultiSelect } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
@@ -21,9 +21,10 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NetworkError from "./NetworkError";
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
+import { OMDB_PRIVATE_KEY } from '@env';
 
 
-const OMDb_API_KEY = 'a5903907'; // Replace with your key if required
+const OMDb_API_KEY = OMDB_PRIVATE_KEY; // Replace with your key by placing into .env file
 
 const AddPost = () => {
   const navigation = useNavigation();
@@ -35,6 +36,7 @@ const AddPost = () => {
   const [star, setStar] = useState(0);
   const [title, setTitle] = useState("");
   const [description, setdescription] = useState("");
+  const [status, setStatus] = useState("");
   const { user, addMoviePost, Timestamp, isConnected } = useContext(userAuth);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
@@ -124,6 +126,7 @@ const AddPost = () => {
       setStar(0);
       setTitle("");
       setdescription("");
+      setStatus("");
       setSelectedIndValue("");
       setSelectedTypeValue("");
       setSelectedImage(null);
@@ -154,9 +157,10 @@ const AddPost = () => {
         const industry = response.Country;
         console.log('imageURI is ', imageURI);
         if (plot) {
-          setdescription(plot);
+          setStatus("Movie Found");
           console.log('description is set to ' + plot);
         } else {
+          setStatus("Movie Not Found");
           Toast.show({
             type: "error",
             text1: "Plot Not Found",
@@ -177,10 +181,10 @@ const AddPost = () => {
         if (genre) {
           setSelectedGen(genre);
         }
-        if(type) {
+        if (type) {
           setSelectedTypeValue(type);
         }
-        if(industry) {
+        if (industry) {
           setSelectedIndValue(industry);
         }
       } catch (error) {
@@ -254,6 +258,12 @@ const AddPost = () => {
               <TouchableOpacity style={styles.searchButton} onPress={fetchPlotAndUpdateDescription}>
                 <Text style={styles.searchButtonText}>Search Movie</Text>
               </TouchableOpacity>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Status:</Text>
+                <Text style={styles.text}>{status}</Text>
+              </View>
+
               {loading ? (
                 <Text>Fetching plot...</Text>
               ) : (
@@ -268,6 +278,8 @@ const AddPost = () => {
                   value={description} // Ensure description state is used as value
                   onChangeText={(text) => setdescription(text)}
                 />)}
+
+
 
               <MultiSelect
                 style={styles.dropdown}
@@ -516,6 +528,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center'
-  }
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    alignSelf: "center",
+  },
+  label: {
+    marginRight: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 16,
+  },
 });
 export default AddPost;
